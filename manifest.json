@@ -3,7 +3,7 @@
     "name": "API-Wallet",
     "version": "1.0",
     "description": "Store and manage APIs from different websites.",
-    "permissions": ["storage", "activeTab", "scripting", "webRequest", "webRequestBlocking"],
+    "permissions": ["storage", "activeTab", "scripting", "webRequest", "declarativeNetRequest"],
     "host_permissions": ["<all_urls>"],
     "background": {
       "service_worker": "background.js"

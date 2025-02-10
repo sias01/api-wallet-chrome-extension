@@ -2,13 +2,50 @@
 <html>
 <head>
   <title>API Wallet</title>
+  <style>
+    body {
+      width: 300px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+    }
+    input {
+      width: 100%;
+      margin: 5px 0;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+    button {
+      margin: 5px 0;
+      padding: 5px 10px;
+    }
+    #apiList {
+      margin-top: 10px;
+      padding-left: 0;
+      list-style: none;
+    }
+    #apiList li {
+      margin: 5px 0;
+      padding: 5px;
+      border: 1px solid #ccc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+  </style>
   <script src="popup.js" defer></script>
 </head>
 <body>
   <h2>API Wallet</h2>
-  <input type="text" id="platform" placeholder="Platform Name">
+  <input type="text" id="platform" placeholder="Platform Name" readonly>
   <input type="text" id="apiKey" placeholder="API Key">
   <button id="addApi">Add API</button>
+  <div id="error" class="error"></div>
   <ul id="apiList"></ul>
 </body>
 </html>
+
