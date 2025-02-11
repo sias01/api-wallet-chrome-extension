@@ -12,9 +12,9 @@
 - **Easy management** – Update or delete API keys effortlessly.  
 
 ## 📸 Screenshots  
-![alt text](image-1.png)
-![alt text](image-2.png)
-![alt text](image-3.png)
+![Description](./demo-images/image-1.png)
+![Description](./demo-images/image-2.png)
+![Description](./demo-images/image-3.png)
 
 ## 🚀 Installation  
 1. **Download the extension files** (or clone this repository).  
