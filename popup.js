@@ -1,98 +1,99 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Get the active tab's URL
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    if (tabs.length > 0) {
-      const url = new URL(tabs[0].url)
-      const platform = url.hostname
-      document.getElementById("platform").value = platform
+  chrome.runtime.sendMessage({ action: "getPlatform" }, (response) => {
+    if (response?.platform) {
+      document.getElementById("platform").value = response.platform;
     }
-  })
+  });
 
-  loadApiList()
-})
+  loadApiList();
+});
 
 document.getElementById("addApi").addEventListener("click", () => {
-  const platform = document.getElementById("platform").value
-  const apiKey = document.getElementById("apiKey").value
+  const platform = document.getElementById("platform").value.trim();
+  const apiKey = document.getElementById("apiKey").value.trim();
 
-  if (platform && apiKey) {
-    // First get existing data
-    chrome.storage.sync.get("apiData", (data) => {
-      try {
-        const apiData = data.apiData || {}
-
-        // Check if we're updating an existing entry
-        if (apiData[platform]) {
-          const confirmed = confirm(`Update existing API key for ${platform}?`)
-          if (!confirmed) return
-        }
-
-        // Update or add new entry
-        apiData[platform] = apiKey
-
-        // Store data with error handling
-        chrome.storage.sync.set({ apiData }, () => {
-          if (chrome.runtime.lastError) {
-            console.error("Storage error:", chrome.runtime.lastError)
-            alert("Error saving API key. Please try a shorter key.")
-          } else {
-            loadApiList()
-            document.getElementById("apiKey").value = "" // Clear input after successful save
-          }
-        })
-      } catch (error) {
-        console.error("Error processing data:", error)
-        alert("Error processing data. Please try again.")
-      }
-    })
+  if (!platform || !apiKey) {
+    alert("Platform and API key cannot be empty.");
+    return;
   }
-})
+
+  chrome.storage.sync.get("apiData", (data) => {
+    const apiData = data.apiData || {};
+
+    if (apiData[platform]) {
+      const confirmed = confirm(`Update existing API key for ${platform}?`);
+      if (!confirmed) return;
+    }
+
+    apiData[platform] = apiKey;
+    chrome.storage.sync.set({ apiData }, () => {
+      if (chrome.runtime.lastError) {
+        alert("Error saving API key. Try a shorter key.");
+      } else {
+        loadApiList();
+        document.getElementById("apiKey").value = "";
+      }
+    });
+  });
+});
 
 function loadApiList() {
   chrome.storage.sync.get("apiData", (data) => {
-    try {
-      const apiList = document.getElementById("apiList")
-      apiList.innerHTML = ""
+    const apiList = document.getElementById("apiList");
+    apiList.innerHTML = "";
 
-      // Show all saved API keys
-      if (data.apiData && Object.keys(data.apiData).length > 0) {
-        Object.entries(data.apiData).forEach(([platform, apiKey]) => {
-          const li = document.createElement("li")
-          // Mask the API key for security
-          const maskedKey = apiKey.substring(0, 4) + "..." + apiKey.slice(-4)
-          li.textContent = `${platform}: ${maskedKey}`
+    if (data.apiData && Object.keys(data.apiData).length > 0) {
+      Object.entries(data.apiData).forEach(([platform, apiKey]) => {
+        const li = document.createElement("li");
 
-          const deleteBtn = document.createElement("button")
-          deleteBtn.textContent = "Delete"
-          deleteBtn.onclick = () => {
-            deleteApi(platform)
-          }
+        const maskedKey = apiKey.length > 8
+          ? apiKey.substring(0, 4) + "..." + apiKey.slice(-4)
+          : "*".repeat(apiKey.length);
 
-          li.appendChild(deleteBtn)
-          apiList.appendChild(li)
-        })
-      }
-    } catch (error) {
-      console.error("Error loading API list:", error)
-      const apiList = document.getElementById("apiList")
-      apiList.innerHTML = ""
+        li.textContent = `${platform}: ${maskedKey}`;
+        li.addEventListener("click", () => showApiModal(apiKey));
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = " &#128465 Delete";
+        deleteBtn.innerHTML = " &#128465; Delete";
+        deleteBtn.classList.add("delete-btn");
+        deleteBtn.onclick = (event) => {
+          event.stopPropagation();
+          deleteApi(platform);
+        };
+
+        li.appendChild(deleteBtn);
+        apiList.appendChild(li);
+      });
+    } else {
+      apiList.innerHTML = "<li>No saved APIs.</li>";
     }
-  })
+  });
 }
+
+function showApiModal(apiKey) {
+  document.getElementById("fullApiKey").textContent = apiKey;
+  document.getElementById("apiModal").style.display = "block";
+}
+
+document.getElementById("closeModal").addEventListener("click", () => {
+  document.getElementById("apiModal").style.display = "none";
+});
+
+document.getElementById("copyApiKey").addEventListener("click", () => {
+  const apiKey = document.getElementById("fullApiKey").textContent;
+  navigator.clipboard.writeText(apiKey).then(() => {
+    alert("Copied to clipboard!");
+  }).catch(() => {
+    alert("Failed to copy.");
+  });
+});
 
 function deleteApi(platform) {
   chrome.storage.sync.get("apiData", (data) => {
     if (data.apiData && data.apiData[platform]) {
-      delete data.apiData[platform]
-      chrome.storage.sync.set({ apiData: data.apiData }, () => {
-        if (chrome.runtime.lastError) {
-          console.error("Error deleting API key:", chrome.runtime.lastError)
-          alert("Error deleting API key. Please try again.")
-        } else {
-          loadApiList()
-        }
-      })
+      delete data.apiData[platform];
+      chrome.storage.sync.set({ apiData: data.apiData }, () => loadApiList());
     }
-  })
+  });
 }
-

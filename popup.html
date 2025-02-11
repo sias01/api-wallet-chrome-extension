@@ -4,48 +4,145 @@
   <title>API Wallet</title>
   <style>
     body {
-      width: 300px;
-      padding: 10px;
-      font-family: Arial, sans-serif;
+      width: 320px;
+      padding: 15px;
+      font-family: "Arial", sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      text-align: center;
     }
+
+    h2 {
+      margin-bottom: 10px;
+      color: #444;
+    }
+
     input {
       width: 100%;
-      margin: 5px 0;
-      padding: 5px;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
       box-sizing: border-box;
     }
+
     button {
-      margin: 5px 0;
-      padding: 5px 10px;
-    }
-    #apiList {
+      width: 100%;
+      padding: 10px;
       margin-top: 10px;
-      padding-left: 0;
-      list-style: none;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #007BFF;
+      color: white;
+      font-weight: bold;
+      transition: 0.3s;
     }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #apiList {
+      margin-top: 15px;
+      list-style: none;
+      padding: 0;
+    }
+
     #apiList li {
-      margin: 5px 0;
-      padding: 5px;
-      border: 1px solid #ccc;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 10px;
+      margin: 5px 0;
+      background: white;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: 0.3s;
     }
-    .error {
-      color: red;
+
+    #apiList li:hover {
+      background: #e9f5ff;
+    }
+
+    .delete-btn {
+      background-color: #dc3545;
+      padding: 6px 10px;
       font-size: 12px;
-      margin-top: 5px;
+    }
+
+    .delete-btn:hover {
+      background-color: #b02a37;
+    }
+
+    /* 🔹 Modern Modal Styling */
+    #apiModal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      width: 90%;
+      max-width: 320px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    #apiModal h3 {
+      margin-top: 0;
+    }
+
+    #fullApiKey {
+      padding: 10px;
+      background: #f1f1f1;
+      border-radius: 5px;
+      word-break: break-all;
+      margin-top: 10px;
+    }
+
+    #copyApiKey {
+      background-color: #28a745;
+    }
+
+    #copyApiKey:hover {
+      background-color: #218838;
+    }
+
+    #closeModal {
+      background-color: #6c757d;
+    }
+
+    #closeModal:hover {
+      background-color: #5a6268;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -55%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
     }
   </style>
   <script src="popup.js" defer></script>
 </head>
 <body>
-  <h2>API Wallet</h2>
-  <input type="text" id="platform" placeholder="Platform Name" readonly>
+  <h2> &#128273 API Wallet</h2>
+  <input type="text" id="platform" placeholder="Platform Name">
   <input type="text" id="apiKey" placeholder="API Key">
   <button id="addApi">Add API</button>
-  <div id="error" class="error"></div>
   <ul id="apiList"></ul>
+
+  <!-- 🔹 Modal for displaying full API key -->
+  <div id="apiModal">
+    <h3>API Key</h3>
+    <p id="fullApiKey"></p>
+    <button id="copyApiKey">📋 Copy to Clipboard</button>
+    <button id="closeModal">  Close</button>
+  </div>
 </body>
 </html>
-
