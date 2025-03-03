@@ -3,7 +3,7 @@
   "name": "API Wallet – Secure API Key Storage for Chrome",
   "version": "1.0",
   "description": "Store and manage APIs from different websites.",
-  "permissions": ["storage", "activeTab", "scripting", "declarativeNetRequest", "tabs"],
+  "permissions": ["storage", "activeTab", "tabs"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
